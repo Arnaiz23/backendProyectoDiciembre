@@ -228,6 +228,22 @@ var controller = {
             });
         }
     },
+    // Sacar una imagen
+    getImage: (req, res) =>{
+        var file = req.params.image;
+        var path_file = './upload/productos/' + file;
+
+        fs.exists(path_file, (exists) => {
+            if (exists) {
+                return res.sendFile(path.resolve(path_file));
+            } else {
+                return res.status(404).send({
+                    status: "error",
+                    message: "La imagen no existe"
+                });
+            }
+        });
+    },
     // Sacar todas las preguntas
     getPreguntas: (req, res) =>{
         Pregunta.find((err, preguntas) =>{

@@ -16,6 +16,7 @@ router.get("/producto/:id", apiController.getProducto); //Un solo producto
 router.post("/new-producto", apiController.newProducto); //Añadir un producto
 router.delete("/delete-producto/:id", apiController.deleteProducto); //Eliminar un producto por id
 router.put("/update-producto/:id", apiController.updateProducto); //Actualizar un producto por id
+router.get("/get-image/:image", apiController.getImage); //Devolver la imagen
 router.get("/preguntas", apiController.getPreguntas); //Sacar todas las preguntas
 router.post("/new-pregunta", apiController.newPregunta); //Añadir una nueva pregunta
 router.put("/update-pregunta/:id", apiController.updatePregunta); //Actualizar una pregunta

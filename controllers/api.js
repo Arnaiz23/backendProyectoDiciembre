@@ -250,6 +250,110 @@ var controller = {
                 preguntas
             });
         });
+    },
+    // Añadir una pregunta
+    newPregunta: (req, res) =>{
+        var data = req.body;
+        var pregunta = new Pregunta();
+
+        try{
+            var validate_pregunta = !validator.isEmpty(data.pregunta);
+            var validate_respuesta = !validator.isEmpty(data.respuesta);
+        }catch(err){
+            return res.status(200).send({
+                status: "error",
+                message: 'Faltan datos por enviar !!!'
+            });
+        }
+
+        if(validate_pregunta && validate_respuesta){
+            pregunta.pregunta = data.pregunta;
+            pregunta.respuesta = data.respuesta;
+
+            pregunta.save((err, preguntaNew) =>{
+                if(err || !preguntaNew){
+                    return res.status(404).send({
+                        status: "error",
+                        message: "No se ha podido guardar la pregunta!!!"
+                    });
+                }
+
+                return res.status(200).send({
+                    status: "success",
+                    preguntaNew
+                });
+
+            });
+
+        }else{
+            return res.status(404).send({
+                status: "error",
+                message: "Los datos no son validos!!!"
+            });
+        }
+    },
+    // Actualizar una pregunta
+    updatePregunta: (req, res) =>{
+        var preguntaId = req.params.id;
+        var data = req.body;
+
+        try{
+            var validate_pregunta = !validator.isEmpty(data.pregunta);
+            var validate_respuesta = !validator.isEmpty(data.respuesta);
+        }catch(err){
+            return res.status(200).send({
+                status: "error",
+                message: 'Faltan datos por enviar !!!'
+            });
+        }
+
+        if(validate_respuesta && validate_pregunta){
+            Pregunta.findByIdAndUpdate({_id: preguntaId}, data, (err, preguntaUpdate) =>{
+                if(err){
+                    return res.status(500).send({
+                        status: "error",
+                        message: 'Error al actualizar'
+                    });
+                }
+    
+                if(!preguntaUpdate){
+                    return res.status(404).send({
+                        status: "error",
+                        message: 'No existe esa pregunta'
+                    });
+                }
+    
+                return res.status(200).send({
+                    status: "success",
+                    preguntaUpdate
+                });
+            });
+        }
+    },
+    // Eliminar una pregunta
+    deletePregunta: (req, res) =>{
+        var preguntaId = req.params.id;
+
+        if(!preguntaId || preguntaId == null){
+            return res.status(404).send({
+                status: "error",
+                message: "No existe ese identificador"
+            });
+        }
+
+        Pregunta.findOneAndDelete({_id: preguntaId}, (err, preguntaDelete) =>{
+            if(err || !preguntaDelete){
+                return res.status(500).send({
+                    status: "error",
+                    message: "No se ha eliminado ninguna pregunta!!!"
+                });
+            }
+
+            return res.status(200).send({
+                status: "success",
+                preguntaDelete
+            });
+        });
     }
 }
 

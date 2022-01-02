@@ -17,5 +17,8 @@ router.post("/new-producto", apiController.newProducto); //Añadir un producto
 router.delete("/delete-producto/:id", apiController.deleteProducto); //Eliminar un producto por id
 router.put("/update-producto/:id", apiController.updateProducto); //Actualizar un producto por id
 router.get("/preguntas", apiController.getPreguntas); //Sacar todas las preguntas
+router.post("/new-pregunta", apiController.newPregunta); //Añadir una nueva pregunta
+router.put("/update-pregunta/:id", apiController.updatePregunta); //Actualizar una pregunta
+router.delete("/delete-pregunta/:id", apiController.deletePregunta); //Eliminar una pregunta
 
 module.exports = router;

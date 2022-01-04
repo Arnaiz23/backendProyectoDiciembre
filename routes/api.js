@@ -17,6 +17,8 @@ router.post("/new-producto", apiController.newProducto); //Añadir un producto
 router.delete("/delete-producto/:id", apiController.deleteProducto); //Eliminar un producto por id
 router.put("/update-producto/:id", apiController.updateProducto); //Actualizar un producto por id
 router.get("/get-image/:image", apiController.getImage); //Devolver la imagen
+router.get("/search-productos/:search", apiController.searchProductos); //Buscador de productos
+router.get("/order-productos/:order/:deporte", apiController.orderProductos); //Ordenar productos
 router.get("/preguntas", apiController.getPreguntas); //Sacar todas las preguntas
 router.post("/new-pregunta", apiController.newPregunta); //Añadir una nueva pregunta
 router.put("/update-pregunta/:id", apiController.updatePregunta); //Actualizar una pregunta

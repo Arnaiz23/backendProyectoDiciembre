@@ -10,7 +10,7 @@ var productoSchema = Schema({
     "tipo" : String,
     "descripcionCorta" : String,
     "descripcion" : String,
-    "precio" : String,
+    "precio" : Number,
     "deporte" : String,
     "disponibilidad" : String,
     "date" : {type: Date, default: Date.now}

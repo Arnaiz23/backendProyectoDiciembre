@@ -244,6 +244,116 @@ var controller = {
             }
         });
     },
+    // Buscar productos
+    searchProductos: (req, res) =>{
+        var searchString = req.params.search;
+
+        Producto.find({
+            "$or": [
+                { "nombre": { "$regex": searchString, "$options": "i" } },  //Si el searchString esta incluido("i") dentro del titulo("title")
+                { "marca": { "$regex": searchString, "$options": "i" } }, //Si el searchString esta incluido("i") dentro del contenido("content")
+                { "tipo": { "$regex": searchString, "$options": "i" } },
+                { "descripcionCorta": { "$regex": searchString, "$options": "i" } }
+            ]
+        })
+            .sort([['date', 'descending']])
+            .exec((err, productos) =>{
+                if (err) {
+                    return res.status(500).send({
+                        status: "error",
+                        message: "Error en la peticion!!!"
+                    });
+                }
+                if (!productos || productos.length <= 0) {
+                    return res.status(500).send({
+                        status: "error",
+                        message: "No hay productos que coincidan con tu busqueda"
+                    });
+                }
+                return res.status(200).send({
+                    status: "success",
+                    productos
+                });
+            });
+    },
+    // Ordenar productos
+    orderProductos: (req, res) =>{
+        var params = req.params.order;
+        var deporte = req.params.deporte;
+
+        if(params == "mas" || params == "menos" || params == "normal"){
+            switch(params){
+                case "mas":
+                    Producto.find({deporte: deporte}).sort('-precio')
+                            .exec((err, productos) =>{
+                                if (err) {
+                                    return res.status(500).send({
+                                        status: "error",
+                                        message: "Error en la peticion!!!"
+                                    });
+                                }
+                                if (!productos || productos.length <= 0) {
+                                    return res.status(500).send({
+                                        status: "error",
+                                        message: "No hay productos que coincidan con tu busqueda"
+                                    });
+                                }
+                                return res.status(200).send({
+                                    status: "success",
+                                    productos
+                                });
+                            })
+                    break;
+                case "menos":
+                    Producto.find({deporte: deporte}).sort('precio')
+                                    .exec((err, productos) =>{
+                                        if (err) {
+                                            return res.status(500).send({
+                                                status: "error",
+                                                message: "Error en la peticion!!!"
+                                            });
+                                        }
+                                        if (!productos || productos.length <= 0) {
+                                            return res.status(500).send({
+                                                status: "error",
+                                                message: "No hay productos que coincidan con tu busqueda"
+                                            });
+                                        }
+                                        return res.status(200).send({
+                                            status: "success",
+                                            productos
+                                        });
+                                    })
+                    break;
+                default:
+                    Producto.find({deporte: deporte})
+                                    .exec((err, productos) =>{
+                                        if (err) {
+                                            return res.status(500).send({
+                                                status: "error",
+                                                message: "Error en la peticion!!!"
+                                            });
+                                        }
+                                        if (!productos || productos.length <= 0) {
+                                            return res.status(500).send({
+                                                status: "error",
+                                                message: "No hay productos que coincidan con tu busqueda"
+                                            });
+                                        }
+                                        return res.status(200).send({
+                                            status: "success",
+                                            productos
+                                        });
+                                    })
+                    break;
+            }
+        }else{
+            return res.status(500).send({
+                status: "error",
+                message: "El orden no esta permitido"
+            });
+        }
+    },
     // Sacar todas las preguntas
     getPreguntas: (req, res) =>{
         Pregunta.find((err, preguntas) =>{

@@ -13,4 +13,4 @@ var usuarioSchema = Schema({
     "direcciones": Array
 });
 
-module.exports = mongoose.model("Usuarios", usuarioSchema);
+module.exports = mongoose.model("users", usuarioSchema);

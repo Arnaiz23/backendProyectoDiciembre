@@ -480,6 +480,55 @@ var controller = {
                 preguntaDelete
             });
         });
+    },
+    // Buscar un usuario por usuario y contraseña
+    comprobarUsuario: (req, res) =>{
+        var data = req.body;
+
+        Usuario.find({usuario: data.usuario, password: data.password}, (err, usuario) =>{
+
+            if(err){
+                return res.status(500).send({
+                    status: "error",
+                    message: "Error al recoger los datos"
+                });
+            }
+
+            if(!usuario || usuario.length == 0){
+                return res.status(404).send({
+                    status: "error",
+                    message: "Ese usuario no existe"
+                });
+            }
+
+            return res.status(200).send({
+                status: "success",
+                usuario
+            });
+        });
+    },
+    // Sacar todos los usuarios
+    getUsuarios: (req, res) =>{
+        Usuario.find().exec((err, usuarios) =>{
+            if(err){
+                return res.status(500).send({
+                    status: "error",
+                    message: "Error al devolver los usuarios"
+                });
+            }
+
+            if(!usuarios || usuarios.length == 0){
+                return res.status(404).send({
+                    status: "error",
+                    message: "No hay usuarios"
+                });
+            }
+
+            return res.status(200).send({
+                status: "success",
+                usuarios
+            });
+        });
     }
 }
 

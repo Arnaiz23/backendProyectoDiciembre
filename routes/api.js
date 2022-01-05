@@ -24,4 +24,7 @@ router.post("/new-pregunta", apiController.newPregunta); //Añadir una nueva pre
 router.put("/update-pregunta/:id", apiController.updatePregunta); //Actualizar una pregunta
 router.delete("/delete-pregunta/:id", apiController.deletePregunta); //Eliminar una pregunta
 
+router.post("/comprobar-usuario", apiController.comprobarUsuario); //Comprobar un usuario por clave y usuario
+router.get("/usuarios", apiController.getUsuarios); //Devuelve todos los usuarios
+
 module.exports = router;

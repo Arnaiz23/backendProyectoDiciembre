@@ -2,6 +2,8 @@
 
 var express = require("express");
 var bodyParser = require("body-parser");
+// var config = require("./configs/config.js");
+// var jwt = require("jsonwebtoken");
 
 var app = express();
 

@@ -8,6 +8,10 @@ var router = express.Router();
 var multipart = require("connect-multiparty");
 var md_upload = multipart({uploadDir: "./upload/productos"});
 
+// Usar middleweare para peticiones que solo haga admin, para editar, eliminar y añadir productos y tal
+// router.post("/new-producto", middlewareNombre, apiController.newProducto);
+
+
 // Rutas
 router.get("/prueba", apiController.prueba); //Ruta de prueba
 router.get("/productos", apiController.getProductos); //Todos los productos
@@ -23,6 +27,7 @@ router.get("/preguntas", apiController.getPreguntas); //Sacar todas las pregunta
 router.post("/new-pregunta", apiController.newPregunta); //Añadir una nueva pregunta
 router.put("/update-pregunta/:id", apiController.updatePregunta); //Actualizar una pregunta
 router.delete("/delete-pregunta/:id", apiController.deletePregunta); //Eliminar una pregunta
+router.post("/getUsuario", apiController.getUsuario); //Devolver datos de un usuario
 
 router.post("/comprobar-usuario", apiController.comprobarUsuario); //Comprobar un usuario por clave y usuario
 router.get("/usuarios", apiController.getUsuarios); //Devuelve todos los usuarios

@@ -3,6 +3,12 @@
 var validator = require("validator");
 var fs = require("fs");
 var path = require("path");
+var jwt = require("jsonwebtoken");
+var config = require("../configs/config.js");
+
+var express = require("express");
+var app = express();
+app.set("llave", config.llave);
 
 // const { validate, exists } = require("../models/producto");
 var Producto = require("../models/producto");
@@ -483,7 +489,7 @@ var controller = {
     },
     // Buscar un usuario por usuario y contraseña
     comprobarUsuario: (req, res) =>{
-        var data = req.body;
+        /* var data = req.body;
 
         Usuario.find({usuario: data.usuario, password: data.password}, (err, usuario) =>{
 
@@ -505,7 +511,72 @@ var controller = {
                 status: "success",
                 usuario
             });
+        }); */
+        var data = req.body;
+
+        Usuario.find({usuario: data.usuario, password: data.password}, (err, usuario) =>{
+
+            if(err){
+                return res.status(500).send({
+                    status: "error",
+                    message: "Error al recoger los datos"
+                });
+            }
+
+            if(!usuario || usuario.length == 0){
+                return res.status(404).send({
+                    status: "error",
+                    message: "Ese usuario no existe"
+                });
+            }
+
+            const payload = {
+                usuario: data.usuario,
+                password: data.password
+            }
+            const token = jwt.sign(payload, app.get("llave"), { expiresIn: 1440});
+
+            return res.status(200).send({
+                status: "success",
+                token
+            });
         });
+    },
+    // Devolver datos de un usuario en concreto
+    getUsuario: (req, res) =>{
+        var token = req.body; //Recibes el token
+
+        
+        // en este caso, recoge el token y lo descifra, si no da error, busca en la base de datos
+        jwt.verify(token.token, app.get("llave"), (err, user) =>{
+            if(err){
+                return res.status(404).send({
+                    status: "error",
+                    message: "Hay un error en los datos"
+                });
+            }
+
+            Usuario.find({usuario: user.usuario, password: user.password}, (err, usuario) =>{
+                if(err){
+                    return res.status(500).send({
+                        status: "error",
+                        message: "Error al comprobar"
+                    });
+                }
+
+                if(!usuario || usuario.length == 0){
+                    return res.status(404).send({
+                        status: "error",
+                        message: "No existe ese usuario"
+                    });
+                }
+
+                return res.status(200).send({
+                    status: "success",
+                    usuario
+                });
+            });
+        })             
     },
     // Sacar todos los usuarios
     getUsuarios: (req, res) =>{

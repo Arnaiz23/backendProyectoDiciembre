@@ -533,7 +533,8 @@ var controller = {
 
             const payload = {
                 usuario: data.usuario,
-                password: data.password
+                password: data.password,
+                id: data._id
             }
             const token = jwt.sign(payload, app.get("llave"), { expiresIn: 1440 });
 

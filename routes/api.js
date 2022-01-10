@@ -8,6 +8,8 @@ var router = express.Router();
 var multipart = require("connect-multiparty");
 var md_upload = multipart({uploadDir: "./upload/productos"});
 
+var autorizacion = require("../middleweare/authJWT");
+
 // Usar middleweare para peticiones que solo haga admin, para editar, eliminar y añadir productos y tal
 // router.post("/new-producto", middlewareNombre, apiController.newProducto);
 
@@ -17,7 +19,7 @@ router.get("/prueba", apiController.prueba); //Ruta de prueba
 router.get("/productos", apiController.getProductos); //Todos los productos
 router.get("/productos/:deporte", apiController.getDeporte); //Todos los productos de un deporte en concreto
 router.get("/producto/:id", apiController.getProducto); //Un solo producto
-router.post("/new-producto", apiController.newProducto); //Añadir un producto
+router.post("/new-producto", [autorizacion.verifyToken, autorizacion.isAdmin], apiController.newProducto); //Añadir un producto
 router.delete("/delete-producto/:id", apiController.deleteProducto); //Eliminar un producto por id
 router.put("/update-producto/:id", apiController.updateProducto); //Actualizar un producto por id
 router.get("/get-image/:image", apiController.getImage); //Devolver la imagen

@@ -2,10 +2,12 @@
 
 var express = require("express");
 var bodyParser = require("body-parser");
+const inicialConfig = require("./libs/initialSetup");
 // var config = require("./configs/config.js");
 // var jwt = require("jsonwebtoken");
 
 var app = express();
+inicialConfig.createRoles();
 
 var api_routes = require("./routes//api");
 

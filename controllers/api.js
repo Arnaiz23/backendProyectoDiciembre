@@ -14,27 +14,28 @@ app.set("llave", config.llave);
 var Producto = require("../models/producto");
 var Usuario = require("../models/usuario");
 var Pregunta = require("../models/preguntas-frecuentes");
+var Role = require("../models/roles");
 
 var controller = {
-    prueba: (req, res) =>{
+    prueba: (req, res) => {
         res.status(200).send({
             status: "success",
             message: "Prueba correcta"
         })
     },
     // Todos los productos
-    getProductos: (req, res) =>{
+    getProductos: (req, res) => {
         var query = Producto.find();
 
-        query.exec((err, productos) =>{
-            if(err){
+        query.exec((err, productos) => {
+            if (err) {
                 res.status(500).send({
                     status: "error",
                     message: "Error al devolver los productos"
                 });
             }
 
-            if(!productos){
+            if (!productos) {
                 res.status(404).send({
                     status: "error",
                     message: "No hay productos disponibles"
@@ -48,18 +49,18 @@ var controller = {
         });
     },
     // Productos de un deporte en concreto
-    getDeporte: (req, res) =>{
+    getDeporte: (req, res) => {
         var deporte = req.params.deporte;
 
-        Producto.find({deporte: deporte}, (err, productos) =>{
-            if(err){
+        Producto.find({ deporte: deporte }, (err, productos) => {
+            if (err) {
                 return res.status(500).send({
                     status: "error",
-                    message: "Error al devolver los productos de "+deporte
+                    message: "Error al devolver los productos de " + deporte
                 });
             }
 
-            if(!productos || productos.length == 0){
+            if (!productos || productos.length == 0) {
                 res.status(404).send({
                     status: "error",
                     message: "No hay productos disponibles"
@@ -73,18 +74,18 @@ var controller = {
         });
     },
     // Un solo producto por id
-    getProducto: (req, res) =>{
+    getProducto: (req, res) => {
         var productoId = req.params.id;
 
-        if(!productoId || productoId == null){
+        if (!productoId || productoId == null) {
             return res.status(404).send({
                 status: "error",
                 message: "No existe ese identificador !!!"
             });
         }
 
-        Producto.findById(productoId, (err, producto) =>{
-            if(!producto || err){
+        Producto.findById(productoId, (err, producto) => {
+            if (!producto || err) {
                 return res.status(404).send({
                     status: "error",
                     message: "No existe el producto !!!"
@@ -98,10 +99,10 @@ var controller = {
         });
     },
     // Añadir producto
-    newProducto: (req, res) =>{
+    newProducto: (req, res) => {
         var data = req.body;
-        
-        try{
+
+        try {
             var validate_nombre = !validator.isEmpty(data.nombre);
             var validate_marca = !validator.isEmpty(data.marca);
             var validate_tipo = !validator.isEmpty(data.tipo);
@@ -110,15 +111,15 @@ var controller = {
             var validate_precio = !validator.isEmpty(data.precio);
             var validate_deporte = !validator.isEmpty(data.deporte);
             var validate_disponibilidad = !validator.isEmpty(data.disponibilidad);
-            
-        }catch(err){
+
+        } catch (err) {
             return res.status(200).send({
                 status: "error",
                 message: 'Faltan datos por enviar !!!'
             });
         }
 
-        if(validate_nombre && validate_marca && validate_tipo && validate_descripcionCorta && validate_descripcion && validate_precio && validate_deporte && validate_disponibilidad){
+        if (validate_nombre && validate_marca && validate_tipo && validate_descripcionCorta && validate_descripcion && validate_precio && validate_deporte && validate_disponibilidad) {
             var producto = new Producto();
 
             producto.nombre = data.nombre;
@@ -130,19 +131,19 @@ var controller = {
             producto.deporte = data.deporte;
             producto.disponibilidad = data.disponibilidad;
 
-            if(data.image){
+            if (data.image) {
                 producto.image = data.image;
-            }else{
+            } else {
                 producto.image = null;
             }
 
-            producto.save((err, productoStored) =>{
+            producto.save((err, productoStored) => {
                 if (err || !productoStored) {
                     return res.status(404).send({
                         status: "error",
                         message: "El producto no se ha guardado!!!"
                     });
-                } 
+                }
 
                 return res.status(200).send({
                     status: "success",
@@ -150,7 +151,7 @@ var controller = {
                 });
             });
 
-        }else{
+        } else {
             return res.status(404).send({
                 status: "error",
                 message: 'Los datos no son validos'
@@ -158,18 +159,18 @@ var controller = {
         }
     },
     // Eliminar un producto
-    deleteProducto: (req, res) =>{
+    deleteProducto: (req, res) => {
         var productoId = req.params.id;
 
-        if(!productoId || productoId == null){
+        if (!productoId || productoId == null) {
             return res.status(404).send({
                 status: "error",
                 message: "No existe ese identificador !!!"
             });
         }
 
-        Producto.findOneAndDelete({_id: productoId}, (err, productoDelete) =>{
-            if(err || !productoDelete){
+        Producto.findOneAndDelete({ _id: productoId }, (err, productoDelete) => {
+            if (err || !productoDelete) {
                 return res.status(500).send({
                     status: "error",
                     message: "No se ha eliminado ningun producto"
@@ -183,11 +184,11 @@ var controller = {
         });
     },
     // Editar producto
-    updateProducto: (req, res) =>{
+    updateProducto: (req, res) => {
         var productoId = req.params.id;
         var data = req.body;
 
-        try{
+        try {
             var validate_nombre = !validator.isEmpty(data.nombre);
             var validate_marca = !validator.isEmpty(data.marca);
             var validate_tipo = !validator.isEmpty(data.tipo);
@@ -196,25 +197,25 @@ var controller = {
             var validate_precio = !validator.isEmpty(data.precio);
             var validate_deporte = !validator.isEmpty(data.deporte);
             var validate_disponibilidad = !validator.isEmpty(data.disponibilidad);
-            
-        }catch(err){
+
+        } catch (err) {
             return res.status(200).send({
                 status: "error",
                 message: 'Faltan datos por enviar !!!'
             });
         }
 
-        if(validate_nombre && validate_marca && validate_tipo && validate_descripcionCorta && validate_descripcion && validate_precio && validate_deporte && validate_disponibilidad){
-            
-            Producto.findByIdAndUpdate({_id: productoId}, data, (err, productoUpdate) =>{
-                if(err){
+        if (validate_nombre && validate_marca && validate_tipo && validate_descripcionCorta && validate_descripcion && validate_precio && validate_deporte && validate_disponibilidad) {
+
+            Producto.findByIdAndUpdate({ _id: productoId }, data, (err, productoUpdate) => {
+                if (err) {
                     return res.status(500).send({
                         status: "error",
                         message: "Error al actualizar"
                     });
                 }
 
-                if(!productoUpdate){
+                if (!productoUpdate) {
                     return res.status(404).send({
                         status: "error",
                         message: "No existe ese producto"
@@ -227,7 +228,7 @@ var controller = {
                 });
             });
 
-        }else{
+        } else {
             return res.status(404).send({
                 status: "error",
                 message: 'Los datos no son validos'
@@ -235,7 +236,7 @@ var controller = {
         }
     },
     // Sacar una imagen
-    getImage: (req, res) =>{
+    getImage: (req, res) => {
         var file = req.params.image;
         var path_file = './upload/productos/' + file;
 
@@ -251,7 +252,7 @@ var controller = {
         });
     },
     // Buscar productos
-    searchProductos: (req, res) =>{
+    searchProductos: (req, res) => {
         var searchString = req.params.search;
 
         Producto.find({
@@ -263,7 +264,7 @@ var controller = {
             ]
         })
             .sort([['date', 'descending']])
-            .exec((err, productos) =>{
+            .exec((err, productos) => {
                 if (err) {
                     return res.status(500).send({
                         status: "error",
@@ -283,77 +284,77 @@ var controller = {
             });
     },
     // Ordenar productos
-    orderProductos: (req, res) =>{
+    orderProductos: (req, res) => {
         var params = req.params.order;
         var deporte = req.params.deporte;
 
-        if(params == "mas" || params == "menos" || params == "normal"){
-            switch(params){
+        if (params == "mas" || params == "menos" || params == "normal") {
+            switch (params) {
                 case "mas":
-                    Producto.find({deporte: deporte}).sort('-precio')
-                            .exec((err, productos) =>{
-                                if (err) {
-                                    return res.status(500).send({
-                                        status: "error",
-                                        message: "Error en la peticion!!!"
-                                    });
-                                }
-                                if (!productos || productos.length <= 0) {
-                                    return res.status(500).send({
-                                        status: "error",
-                                        message: "No hay productos que coincidan con tu busqueda"
-                                    });
-                                }
-                                return res.status(200).send({
-                                    status: "success",
-                                    productos
+                    Producto.find({ deporte: deporte }).sort('-precio')
+                        .exec((err, productos) => {
+                            if (err) {
+                                return res.status(500).send({
+                                    status: "error",
+                                    message: "Error en la peticion!!!"
                                 });
-                            })
+                            }
+                            if (!productos || productos.length <= 0) {
+                                return res.status(500).send({
+                                    status: "error",
+                                    message: "No hay productos que coincidan con tu busqueda"
+                                });
+                            }
+                            return res.status(200).send({
+                                status: "success",
+                                productos
+                            });
+                        })
                     break;
                 case "menos":
-                    Producto.find({deporte: deporte}).sort('precio')
-                                    .exec((err, productos) =>{
-                                        if (err) {
-                                            return res.status(500).send({
-                                                status: "error",
-                                                message: "Error en la peticion!!!"
-                                            });
-                                        }
-                                        if (!productos || productos.length <= 0) {
-                                            return res.status(500).send({
-                                                status: "error",
-                                                message: "No hay productos que coincidan con tu busqueda"
-                                            });
-                                        }
-                                        return res.status(200).send({
-                                            status: "success",
-                                            productos
-                                        });
-                                    })
+                    Producto.find({ deporte: deporte }).sort('precio')
+                        .exec((err, productos) => {
+                            if (err) {
+                                return res.status(500).send({
+                                    status: "error",
+                                    message: "Error en la peticion!!!"
+                                });
+                            }
+                            if (!productos || productos.length <= 0) {
+                                return res.status(500).send({
+                                    status: "error",
+                                    message: "No hay productos que coincidan con tu busqueda"
+                                });
+                            }
+                            return res.status(200).send({
+                                status: "success",
+                                productos
+                            });
+                        })
                     break;
                 default:
-                    Producto.find({deporte: deporte})
-                                    .exec((err, productos) =>{
-                                        if (err) {
-                                            return res.status(500).send({
-                                                status: "error",
-                                                message: "Error en la peticion!!!"
-                                            });
-                                        }
-                                        if (!productos || productos.length <= 0) {
-                                            return res.status(500).send({
-                                                status: "error",
-                                                message: "No hay productos que coincidan con tu busqueda"
-                                            });
-                                        }
-                                        return res.status(200).send({
-                                            status: "success",
-                                            productos
-                                        });
-                                    })
+                    Producto.find({ deporte: deporte })
+                        .exec((err, productos) => {
+                            if (err) {
+                                return res.status(500).send({
+                                    status: "error",
+                                    message: "Error en la peticion!!!"
+                                });
+                            }
+                            if (!productos || productos.length <= 0) {
+                                return res.status(500).send({
+                                    status: "error",
+                                    message: "No hay productos que coincidan con tu busqueda"
+                                });
+                            }
+                            return res.status(200).send({
+                                status: "success",
+                                productos
+                            });
+                        })
                     break;
             }
-        }else{
+        } else {
             return res.status(500).send({
                 status: "error",
                 message: "El orden no esta permitido"
@@ -361,16 +362,16 @@ var controller = {
         }
     },
     // Sacar todas las preguntas
-    getPreguntas: (req, res) =>{
-        Pregunta.find((err, preguntas) =>{
-            if(err){
+    getPreguntas: (req, res) => {
+        Pregunta.find((err, preguntas) => {
+            if (err) {
                 return res.status(500).send({
                     status: "error",
                     message: 'Error al devolver las preguntas'
                 });
             }
 
-            if(!preguntas){
+            if (!preguntas) {
                 return res.status(404).send({
                     status: "error",
                     message: 'No hay preguntas disponibles'
@@ -384,26 +385,26 @@ var controller = {
         });
     },
     // Añadir una pregunta
-    newPregunta: (req, res) =>{
+    newPregunta: (req, res) => {
         var data = req.body;
         var pregunta = new Pregunta();
 
-        try{
+        try {
             var validate_pregunta = !validator.isEmpty(data.pregunta);
             var validate_respuesta = !validator.isEmpty(data.respuesta);
-        }catch(err){
+        } catch (err) {
             return res.status(200).send({
                 status: "error",
                 message: 'Faltan datos por enviar !!!'
             });
         }
 
-        if(validate_pregunta && validate_respuesta){
+        if (validate_pregunta && validate_respuesta) {
             pregunta.pregunta = data.pregunta;
             pregunta.respuesta = data.respuesta;
 
-            pregunta.save((err, preguntaNew) =>{
-                if(err || !preguntaNew){
+            pregunta.save((err, preguntaNew) => {
+                if (err || !preguntaNew) {
                     return res.status(404).send({
                         status: "error",
                         message: "No se ha podido guardar la pregunta!!!"
@@ -417,7 +418,7 @@ var controller = {
 
             });
 
-        }else{
+        } else {
             return res.status(404).send({
                 status: "error",
                 message: "Los datos no son validos!!!"
@@ -425,36 +426,36 @@ var controller = {
         }
     },
     // Actualizar una pregunta
-    updatePregunta: (req, res) =>{
+    updatePregunta: (req, res) => {
         var preguntaId = req.params.id;
         var data = req.body;
 
-        try{
+        try {
             var validate_pregunta = !validator.isEmpty(data.pregunta);
             var validate_respuesta = !validator.isEmpty(data.respuesta);
-        }catch(err){
+        } catch (err) {
             return res.status(200).send({
                 status: "error",
                 message: 'Faltan datos por enviar !!!'
             });
         }
 
-        if(validate_respuesta && validate_pregunta){
-            Pregunta.findByIdAndUpdate({_id: preguntaId}, data, (err, preguntaUpdate) =>{
-                if(err){
+        if (validate_respuesta && validate_pregunta) {
+            Pregunta.findByIdAndUpdate({ _id: preguntaId }, data, (err, preguntaUpdate) => {
+                if (err) {
                     return res.status(500).send({
                         status: "error",
                         message: 'Error al actualizar'
                     });
                 }
-    
-                if(!preguntaUpdate){
+
+                if (!preguntaUpdate) {
                     return res.status(404).send({
                         status: "error",
                         message: 'No existe esa pregunta'
                     });
                 }
-    
+
                 return res.status(200).send({
                     status: "success",
                     preguntaUpdate
@@ -463,18 +464,18 @@ var controller = {
         }
     },
     // Eliminar una pregunta
-    deletePregunta: (req, res) =>{
+    deletePregunta: (req, res) => {
         var preguntaId = req.params.id;
 
-        if(!preguntaId || preguntaId == null){
+        if (!preguntaId || preguntaId == null) {
             return res.status(404).send({
                 status: "error",
                 message: "No existe ese identificador"
             });
         }
 
-        Pregunta.findOneAndDelete({_id: preguntaId}, (err, preguntaDelete) =>{
-            if(err || !preguntaDelete){
+        Pregunta.findOneAndDelete({ _id: preguntaId }, (err, preguntaDelete) => {
+            if (err || !preguntaDelete) {
                 return res.status(500).send({
                     status: "error",
                     message: "No se ha eliminado ninguna pregunta!!!"
@@ -488,7 +489,7 @@ var controller = {
         });
     },
     // Buscar un usuario por usuario y contraseña
-    comprobarUsuario: (req, res) =>{
+    comprobarUsuario: (req, res) => {
         /* var data = req.body;
 
         Usuario.find({usuario: data.usuario, password: data.password}, (err, usuario) =>{
@@ -514,16 +515,16 @@ var controller = {
         }); */
         var data = req.body;
 
-        Usuario.find({usuario: data.usuario, password: data.password}, (err, usuario) =>{
+        Usuario.find({ usuario: data.usuario, password: data.password }, (err, usuario) => {
 
-            if(err){
+            if (err) {
                 return res.status(500).send({
                     status: "error",
                     message: "Error al recoger los datos"
                 });
             }
 
-            if(!usuario || usuario.length == 0){
+            if (!usuario || usuario.length == 0) {
                 return res.status(404).send({
                     status: "error",
                     message: "Ese usuario no existe"
@@ -534,7 +535,7 @@ var controller = {
                 usuario: data.usuario,
                 password: data.password
             }
-            const token = jwt.sign(payload, app.get("llave"), { expiresIn: 1440});
+            const token = jwt.sign(payload, app.get("llave"), { expiresIn: 1440 });
 
             return res.status(200).send({
                 status: "success",
@@ -543,28 +544,28 @@ var controller = {
         });
     },
     // Devolver datos de un usuario en concreto
-    getUsuario: (req, res) =>{
+    getUsuario: (req, res) => {
         var token = req.body; //Recibes el token
 
-        
+
         // en este caso, recoge el token y lo descifra, si no da error, busca en la base de datos
-        jwt.verify(token.token, app.get("llave"), (err, user) =>{
-            if(err){
+        jwt.verify(token.token, app.get("llave"), (err, user) => {
+            if (err) {
                 return res.status(404).send({
                     status: "error",
                     message: "Hay un error en los datos"
                 });
             }
 
-            Usuario.find({usuario: user.usuario, password: user.password}, (err, usuario) =>{
-                if(err){
+            Usuario.find({ usuario: user.usuario, password: user.password }, (err, usuario) => {
+                if (err) {
                     return res.status(500).send({
                         status: "error",
                         message: "Error al comprobar"
                     });
                 }
 
-                if(!usuario || usuario.length == 0){
+                if (!usuario || usuario.length == 0) {
                     return res.status(404).send({
                         status: "error",
                         message: "No existe ese usuario"
@@ -576,19 +577,19 @@ var controller = {
                     usuario
                 });
             });
-        })             
+        })
     },
     // Sacar todos los usuarios
-    getUsuarios: (req, res) =>{
-        Usuario.find().exec((err, usuarios) =>{
-            if(err){
+    getUsuarios: (req, res) => {
+        Usuario.find().exec((err, usuarios) => {
+            if (err) {
                 return res.status(500).send({
                     status: "error",
                     message: "Error al devolver los usuarios"
                 });
             }
 
-            if(!usuarios || usuarios.length == 0){
+            if (!usuarios || usuarios.length == 0) {
                 return res.status(404).send({
                     status: "error",
                     message: "No hay usuarios"
@@ -600,6 +601,33 @@ var controller = {
                 usuarios
             });
         });
+    },
+    // Crear un nuevo usuario
+    newUsuario: async (req, res) => {
+        try {
+            const { usuario, email, password, nombre, apellidos, roles, direcciones } = req.body;
+
+            const newUser = new Usuario({ usuario: usuario, password: await Usuario.encrypt(password), correo: email, nombre: nombre, apellidos: apellidos, direcciones: direcciones });
+
+            if (req.body.roles) {
+                const foundRoles = await Role.find({ name: { $in: roles } });
+                newUser.roles = foundRoles.map(role => role._id);
+            } else {
+                const role = await Role.findOne({ name: "usuario" });
+                newUser.roles = role._id;
+            }
+
+            newUser.save((err, userAdd) =>{
+                if(err) return res.status(500).send({status: "error", message: "Error al guardar el usuario"});
+
+                return res.status(200).send({
+                    status: "success",
+                    userAdd
+                });
+            });
+        } catch (error) {
+            console.error(error)
+        }
     }
 }
 

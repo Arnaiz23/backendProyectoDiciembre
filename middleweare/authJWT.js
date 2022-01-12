@@ -15,10 +15,11 @@ const data = {
             const decoded = jwt.verify(token, config.llave);
             req.userUser = decoded.usuario;
             req.userPass = decoded.password;
-            console.log(decoded)
 
-            const user = await User.findOne({usuario: req.userUser, password: req.userPass}, {password: 0});
+            const user = await User.findOne({usuario: req.userUser }, {password: 0});
             if(!user) return res.status(400).send({status: "error", message: "No se ha encontrado el usuario"});
+
+            req.userId = user.id;
 
             next();
 
@@ -28,7 +29,29 @@ const data = {
 
     },
     isAdmin: async (req, res, next) =>{
-        
+        try {
+            
+            const user = await User.findById(req.userId);
+            const roles = await Rol.find({_id: { $in: user.roles }});
+
+            console.log(roles)
+
+            for(let i = 0; i < roles.length; i++){
+                if(roles[i].name === "admin"){
+                    next();
+                    return;
+                }
+            }
+
+            return res.status(403).send({
+                status: "error",
+                message: "Es necesario ser admin"
+            })
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({message: "No funciono"});
+        }
     }
 }
 

@@ -489,33 +489,10 @@ var controller = {
         });
     },
     // Buscar un usuario por usuario y contraseña
-    comprobarUsuario: (req, res) => {
-        /* var data = req.body;
-
-        Usuario.find({usuario: data.usuario, password: data.password}, (err, usuario) =>{
-
-            if(err){
-                return res.status(500).send({
-                    status: "error",
-                    message: "Error al recoger los datos"
-                });
-            }
-
-            if(!usuario || usuario.length == 0){
-                return res.status(404).send({
-                    status: "error",
-                    message: "Ese usuario no existe"
-                });
-            }
-
-            return res.status(200).send({
-                status: "success",
-                usuario
-            });
-        }); */
+    comprobarUsuario: async (req, res) => {
         var data = req.body;
 
-        Usuario.find({ usuario: data.usuario, password: data.password }, (err, usuario) => {
+        Usuario.findOne({ usuario: data.usuario}, async (err, usuario) => {
 
             if (err) {
                 return res.status(500).send({
@@ -531,17 +508,30 @@ var controller = {
                 });
             }
 
-            const payload = {
-                usuario: data.usuario,
-                password: data.password,
-                id: data._id
+            if(usuario){
+                const verificado = await Usuario.comparePassword(data.password, usuario.password);
+                
+                if(verificado){
+                    const payload = {
+                        usuario: data.usuario,
+                        password: data.password,
+                        id: data._id
+                    }
+                    const token = jwt.sign(payload, app.get("llave"), { expiresIn: 1440 });
+        
+                    return res.status(200).send({
+                        status: "success",
+                        token
+                    });
+                }else{
+                    return res.status(404).send({
+                        status: "error",
+                        message: "Las contraseñas no coinciden!!!"
+                    });
+                }
             }
-            const token = jwt.sign(payload, app.get("llave"), { expiresIn: 1440 });
 
-            return res.status(200).send({
-                status: "success",
-                token
-            });
+            
         });
     },
     // Devolver datos de un usuario en concreto
@@ -558,7 +548,7 @@ var controller = {
                 });
             }
 
-            Usuario.find({ usuario: user.usuario, password: user.password }, (err, usuario) => {
+            Usuario.find({ usuario: user.usuario}, (err, usuario) => {
                 if (err) {
                     return res.status(500).send({
                         status: "error",

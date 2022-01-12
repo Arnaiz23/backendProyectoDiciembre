@@ -34,5 +34,6 @@ router.post("/getUsuario", apiController.getUsuario); //Devolver datos de un usu
 router.post("/comprobar-usuario", apiController.comprobarUsuario); //Comprobar un usuario por clave y usuario
 router.get("/usuarios", apiController.getUsuarios); //Devuelve todos los usuarios
 router.post("/new-usuario", apiController.newUsuario); //Crear un nuevo usuario
+router.post("/admin-user", apiController.userAdmin); //Comprobar si un usuario es admin
 
 module.exports = router;

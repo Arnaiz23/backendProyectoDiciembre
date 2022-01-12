@@ -34,8 +34,6 @@ const data = {
             const user = await User.findById(req.userId);
             const roles = await Rol.find({_id: { $in: user.roles }});
 
-            console.log(roles)
-
             for(let i = 0; i < roles.length; i++){
                 if(roles[i].name === "admin"){
                     next();

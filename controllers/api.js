@@ -619,6 +619,40 @@ var controller = {
         } catch (error) {
             console.error(error)
         }
+    },
+    // Comprobar si un usuario es admin
+    userAdmin: async (req, res) =>{
+        var token = req.body.token;
+        
+        try {
+
+            const decoded = jwt.verify(token, config.llave);
+
+            const user = await Usuario.findOne({usuario: decoded.usuario }, {password: 0});
+            if(!user) return res.status(400).send({status: "error", message: "No se ha encontrado el usuario"});
+
+            const roles = await Role.find({_id: { $in: user.roles }});
+
+            for(let i = 0; i < roles.length; i++){
+                if(roles[i].name === "admin"){
+                    // next();
+                    return res.status(200).send({
+                        status: "success",
+                        message: "Eres admin"
+                    });
+                }
+            }
+
+            return res.status(403).send({
+                status: "error",
+                message: "No eres admin"
+            })
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({message: "No funciono"});
+        }
+
     }
 }
 

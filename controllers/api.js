@@ -596,9 +596,9 @@ var controller = {
     // Crear un nuevo usuario
     newUsuario: async (req, res) => {
         try {
-            const { usuario, email, password, nombre, apellidos, roles, direcciones } = req.body;
-
-            const newUser = new Usuario({ usuario: usuario, password: await Usuario.encrypt(password), correo: email, nombre: nombre, apellidos: apellidos, direcciones: direcciones });
+            const { usuario, correo, password, nombre, apellidos, roles, direcciones } = req.body;
+            
+            const newUser = new Usuario({ usuario: usuario, password: await Usuario.encrypt(password), correo: correo, nombre: nombre, apellidos: apellidos, direcciones: direcciones });
 
             if (req.body.roles) {
                 const foundRoles = await Role.find({ name: { $in: roles } });

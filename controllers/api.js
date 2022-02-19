@@ -653,6 +653,40 @@ var controller = {
             return res.status(500).send({message: "No funciono"});
         }
 
+    },
+    updateUser: async (req, res)=>{
+        try {
+
+            var usuarioId = req.params.id;
+
+            const updateUser = req.body;
+
+            updateUser.password = await Usuario.encrypt(updateUser.password);
+
+            Usuario.findByIdAndUpdate({ _id: usuarioId }, updateUser, (err, usuarioUpdate) => {
+                if (err) {
+                    return res.status(500).send({
+                        status: "error",
+                        message: 'Error al actualizar'
+                    });
+                }
+
+                if (!usuarioUpdate) {
+                    return res.status(404).send({
+                        status: "error",
+                        message: 'No existe ese usuario'
+                    });
+                }
+
+                return res.status(200).send({
+                    status: "success",
+                    usuarioUpdate
+                });
+            });
+            
+        } catch (error) {
+            console.error(error)
+        }
     }
 }
 

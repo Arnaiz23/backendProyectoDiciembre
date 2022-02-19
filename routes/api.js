@@ -35,5 +35,6 @@ router.post("/comprobar-usuario", apiController.comprobarUsuario); //Comprobar u
 router.get("/usuarios", apiController.getUsuarios); //Devuelve todos los usuarios
 router.post("/new-usuario", apiController.newUsuario); //Crear un nuevo usuario
 router.post("/admin-user", apiController.userAdmin); //Comprobar si un usuario es admin
+router.put("/updateUsuario/:id", apiController.updateUser); //Actualizar un usuario
 
 module.exports = router;

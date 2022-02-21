@@ -15,6 +15,7 @@ var Producto = require("../models/producto");
 var Usuario = require("../models/usuario");
 var Pregunta = require("../models/preguntas-frecuentes");
 var Role = require("../models/roles");
+const { exit } = require("process");
 
 var controller = {
     prueba: (req, res) => {
@@ -661,7 +662,22 @@ var controller = {
 
             const updateUser = req.body;
 
-            updateUser.password = await Usuario.encrypt(updateUser.password);
+            /* await Usuario.findOne({_id: usuarioId},async (err,usuario) =>{
+                console.log(updateUser.password+ " primero");
+                console.log("---------------- 1");
+                if(updateUser.password != usuario.password){
+                    updateUser.password = await Usuario.encrypt(updateUser.password);
+                    console.log(updateUser.password);
+                    console.log("---------------- Dentro");
+                    exit;
+                }
+            }) */
+            const usuario = await Usuario.findOne({_id: usuarioId});
+            if(updateUser.password != usuario.password){
+                updateUser.password = await Usuario.encrypt(updateUser.password);
+            }
+
+            // updateUser.password = await Usuario.encrypt(updateUser.password);
 
             Usuario.findByIdAndUpdate({ _id: usuarioId }, updateUser, (err, usuarioUpdate) => {
                 if (err) {

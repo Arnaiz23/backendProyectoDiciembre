@@ -703,6 +703,25 @@ var controller = {
         } catch (error) {
             console.error(error)
         }
+    },
+    deleteUser: (req,res) =>{
+        
+        let userId = req.params.id;
+
+        Usuario.findOneAndRemove({_id : userId}, (err, deleteUser) =>{
+            if(err){
+                return res.status(500).send({
+                    "status": "error",
+                    "message": "Error al eliminar el usuario"
+                });
+            }
+
+            return res.status(200).send({
+                "status" : "success",
+                "user" : deleteUser
+            })
+        });
+        
     }
 }
 

@@ -14,6 +14,7 @@ app.set("llave", config.llave);
 var Producto = require("../models/producto");
 var Usuario = require("../models/usuario");
 var Pregunta = require("../models/preguntas-frecuentes");
+var Pedido = require("../models/pedido");
 var Role = require("../models/roles");
 const { exit } = require("process");
 
@@ -721,6 +722,46 @@ var controller = {
                 "user" : deleteUser
             })
         });
+        
+    },
+    newPedido: (req,res) =>{
+
+        const body = req.body;
+
+        let pedido = new Pedido();
+
+        pedido.id_usuario = body.id_usuario;
+        pedido.pedido = body.pedido;
+
+        pedido.save((err,newPedido) => {
+            if(err || !newPedido){
+                res.status(500).send({
+                    "status" : "error",
+                    "message" : "Ha habido un error al crear el pedido"
+                });
+            }
+
+            res.status(200).send({
+                "status" : "success",
+                "message" : newPedido
+            })
+
+
+        });
+        
+    },
+    updatePedido: (req,res)=>{
+
+        const pedidoId = req.params.id;
+
+        const body = req.body;
+
+
+
+    },
+    getPedidos: (req,res) =>{
+
+        const usuarioId = req.params.id;
         
     }
 }

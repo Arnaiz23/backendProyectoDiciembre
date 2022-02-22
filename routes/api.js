@@ -38,4 +38,9 @@ router.post("/admin-user", apiController.userAdmin); //Comprobar si un usuario e
 router.put("/updateUsuario/:id", apiController.updateUser); //Actualizar un usuario
 router.delete("/deleteUser/:id", apiController.deleteUser); //Actualizar un usuario
 
+router.post("/newPedido", apiController.newPedido); //Nuevo pedido
+router.put("/updatePedido/:id", apiController.updatePedido); //Actualizar pedido
+router.put("/getPedidos/:id", apiController.getPedidos); //Devolver pedidos
+
+
 module.exports = router;

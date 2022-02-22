@@ -756,7 +756,31 @@ var controller = {
 
         const body = req.body;
 
+        // let pedido = new Pedido();
 
+        /* pedido.id_usuario = body.id_usuario;
+        pedido.pedido = body.pedido; */
+
+        Pedido.findOneAndUpdate({_id: pedidoId},body, (err, updatePedido) => {
+            if(err) {
+                res.status(500).send({
+                    "status" : "error",
+                    "message" : "Hay un error al actualizar"
+                });
+            }
+
+            if (!updatePedido) {
+                return res.status(404).send({
+                    status: "error",
+                    message: "No existe ese producto"
+                });
+            }
+
+            res.status(200).send({
+                "status" : "success",
+                "pedido" : updatePedido
+            })
+        })
 
     },
     getPedidos: (req,res) =>{

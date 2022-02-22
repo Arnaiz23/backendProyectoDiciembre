@@ -810,6 +810,27 @@ var controller = {
 
         })
         
+    },
+    getPedido: (req,res) =>{
+
+        const pedidoId = req.params.id;
+
+        Pedido.find({"_id" : pedidoId}, (err, pedidos) => {
+
+            if(err || !pedidos){
+                res.status(500).send({
+                    "status" : "error",
+                    "message" : "Error en la consulta"
+                });
+            }
+
+            res.status(200).send({
+                "status" : "success",
+                "pedidos" : pedidos
+            })
+
+        })
+        
     }
 }
 

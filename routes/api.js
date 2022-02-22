@@ -41,6 +41,7 @@ router.delete("/deleteUser/:id", apiController.deleteUser); //Actualizar un usua
 router.post("/newPedido", apiController.newPedido); //Nuevo pedido
 router.put("/updatePedido/:id", apiController.updatePedido); //Actualizar pedido
 router.get("/getPedidos/:id", apiController.getPedidos); //Devolver pedidos
+router.get("/getPedido/:id", apiController.getPedido); //Devolver un pedido
 
 
 module.exports = router;

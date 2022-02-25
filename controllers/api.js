@@ -831,6 +831,23 @@ var controller = {
 
         })
         
+    },
+    deletePedido: (req,res) =>{
+        const pedidoId = req.params.id;
+
+        Pedido.findByIdAndRemove(pedidoId, (err, pedidoDelete) => {
+            if(err){
+                return res.status(500).send({
+                    "status" : "error",
+                    "message" : "No existe ese pedido"
+                })
+            }
+
+            return res.status(200).send({
+                "status" : "success",
+                "message" : pedidoDelete
+            })
+        });
     }
 }
 

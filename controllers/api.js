@@ -761,7 +761,7 @@ var controller = {
         /* pedido.id_usuario = body.id_usuario;
         pedido.pedido = body.pedido; */
 
-        Pedido.findOneAndUpdate({_id: pedidoId},body, (err, updatePedido) => {
+        Pedido.findByIdAndUpdate({_id: pedidoId},body, (err, updatePedido) => {
             if(err) {
                 res.status(500).send({
                     "status" : "error",
